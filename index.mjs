@@ -128,10 +128,13 @@ function credentialKey(credential, base) {
 function modelOf(provider, model, base) {
   const thinking = model?.thinking === true
   const image = model?.supportImage === true
+  const ratio = string(model?.ratio)
+  const label = string(model.displayName) || model.modelId
   return {
     id: model.modelId,
     providerID: provider?.id ?? SITE.id,
-    name: string(model.displayName) || model.modelId,
+    name: ratio ? `${label} · ${ratio}` : label,
+    ratio,
     api: { id: model.modelId, url: base, npm: NPM },
     status: "active",
     headers: {},

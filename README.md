@@ -27,7 +27,7 @@
 | `device-auth.mjs` | 新增。移植自 qaz139688 0.2.4 的 `device-auth.mjs`，只改返回给宿主的 auth 形状（补 `access`/`key`/`license`，`source: "device"`） |
 | `index.mjs` | 引入 `deviceLogin`；新增 `deviceSignIn()`；`auth.methods` 增加第一项「Comate 官网设备授权（网页确认，推荐）」 |
 | `discovery.mjs` | `isComate()` 的 oauth 分支增加 `source === "device"`。原本只认 `comate`/`comate-paste`，会拒掉设备授权存下来的凭据 |
-| `package.json` | 更名 `magpie-comate-auth-plus`，版本 `0.5.13`，`files` 增加 `device-auth.mjs` |
+| `package.json` | 更名 `magpie-comate-auth-plus`，`files` 增加 `device-auth.mjs` |
 | `selftest.mjs` | 新增。设备授权全流程 + 凭据判据 + 三种登录方式的断言（6/6） |
 
 设备授权流程（与百度官方 Zulu 1.7.21 的 SaaS 设备授权同源）：
@@ -77,3 +77,14 @@ node --test *.test.mjs   # 上游原有测试（部分用例依赖 POSIX 路径�
 ## 许可
 
 MIT。上游两处代码的版权归各自作者：qaz139688（`device-auth.mjs` 的原始实现）、PengJunchen（0.5.12 主体）。本仓库只做合并与适配。
+
+## 倍率（ratio）与上下文窗口
+
+Comate 官方的模型目录接口 `POST /api/v2/api/models/available` 会为每个模型返回 `ratio`（额度消耗倍率，如 `0.3x` / `1x`）与 `maxContextWindow`（单位 **K**）。0.5.14 起插件把它们透传出来：
+
+- `ratio` → 模型对象的 `ratio` 字段，并追加到显示名之后（`GLM-5.3 · 1x`）；
+- `maxContextWindow` × 1024 → `limit.context`（此前为空，网关目录里 `maxInputTokens` 恒 0）。
+
+倍率只是**额度消耗速度**，不是价格：Comate 是订阅/积分制，token 数由插件本地估算（`usage.comate_usage.method = "unicode-density-v1"`，上游 execute 流不返回 token 计数，也不返回计费信息）。要算钱需要另配单价。
+
+快速查看当前倍率表（容器内，读 `/root/.comate_license`）：见 `scripts/comate-ratio.mjs`。

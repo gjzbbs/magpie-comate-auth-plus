@@ -146,7 +146,13 @@ export function cloudHooks(hooks, options = {}, shared) {
       for (const model of list) names.set(model.modelId, model.modelId)
       aliases.set(a.license, names)
       while (aliases.size > MAX_SESSIONS) aliases.delete(aliases.keys().next().value)
-      return Object.fromEntries(list.map(model => [model.modelId, shared.modelOf(provider, { ...model, thinking: model.thinking ?? model.supportThinking === true }, ORIGIN)]))
+      return Object.fromEntries(list.map(model => {
+        // 上游 maxContextWindow 单位是 K（1024 -> 1M tokens）；转成 Magpie 的 limit.context，
+        // 否则网关目录里 capabilities.maxInputTokens 恒为 0。ratio 由 modelOf 透传。
+        const contextK = Number(model.maxContextWindow) || 0
+        const limit = contextK > 0 ? { limit: { ...(model.limit || {}), context: contextK * 1024 } } : {}
+        return [model.modelId, shared.modelOf(provider, { ...model, ...limit, thinking: model.thinking ?? model.supportThinking === true }, ORIGIN)]
+      }))
     } catch {
       if (a) aliases.delete(a.license)
       return provider.models
