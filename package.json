@@ -1,0 +1,39 @@
+{
+  "name": "magpie-comate-auth-plus",
+  "version": "0.5.13",
+  "description": "Baidu Comate cloud provider for Magpie: device authorization sign-in (web confirm, no paste) + full client-owned tool calling, images and native session continuation. Merged from qaz139688/magpie-comate-auth 0.2.4 and @pengjunchen/magpie-comate-auth 0.5.12.",
+  "type": "module",
+  "main": "./index.mjs",
+  "exports": "./index.mjs",
+  "files": [
+    "index.mjs",
+    "cloud.mjs",
+    "images.mjs",
+    "cloud-session.mjs",
+    "usage.mjs",
+    "tool-adapter.mjs",
+    "tool-schema.mjs",
+    "tool-profiles.mjs",
+    "tool-search.mjs",
+    "protocol.mjs",
+    "discovery.mjs",
+    "README.md",
+    "device-auth.mjs"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "test:integration": "node --test cloud-host.test.mjs",
+    "build": "node scripts/build.mjs"
+  },
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "magpie",
+    "comate",
+    "baidu",
+    "文心快码",
+    "magpie-plugin"
+  ],
+  "license": "MIT",
+  "author": "PengJunchen"
+}
