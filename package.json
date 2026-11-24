@@ -1,6 +1,6 @@
 {
   "name": "magpie-comate-auth-plus",
-  "version": "0.5.15",
+  "version": "0.5.16",
   "description": "Baidu Comate cloud provider for Magpie: device authorization sign-in (web confirm, no paste) + full client-owned tool calling, images and native session continuation. Merged from qaz139688/magpie-comate-auth 0.2.4 and @pengjunchen/magpie-comate-auth 0.5.12.",
   "type": "module",
   "main": "./index.mjs",

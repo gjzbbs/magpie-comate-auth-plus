@@ -125,11 +125,23 @@ function credentialKey(credential, base) {
   return JSON.stringify([base, credential.license])
 }
 
+// 上游倍率形如 "0.3x" / "1x"，网关面板的倍率列要的是 "x0.3 credits" 这种写法：
+// 显示格式化 u3e 与排序解析器 Nee 都用 /x\s*([\d.]+)/i —— x 必须在数字前面，
+// "0.3x" 会解析成 null，列能显示但点表头排序时全部判为「未知倍率」而不动。
+// 采用与 trae/raccoon/qoder 一致的 "x{num} credits"。
+function creditsOf(ratio) {
+  const matched = /([\d.]+)\s*x/i.exec(ratio)
+  if (!matched) return ""
+  const value = Number(matched[1])
+  return Number.isFinite(value) ? `x${matched[1]} credits` : ""
+}
+
 function modelOf(provider, model, base) {
   const thinking = model?.thinking === true
   const image = model?.supportImage === true
   const ratio = string(model?.ratio)
   const label = string(model.displayName) || model.modelId
+  const credits = creditsOf(ratio)
   return {
     id: model.modelId,
     providerID: provider?.id ?? SITE.id,
@@ -137,7 +149,7 @@ function modelOf(provider, model, base) {
     ratio,
     // 网关的模型管理「倍率」列只读 credits（catalog/view.rs 原样透传 item.credits，
     // 面板 ui.js: `S.credits ? u3e(S.credits) : "—"`）。上游没给倍率就不编值。
-    ...(ratio ? { credits: ratio } : {}),
+    ...(credits ? { credits } : {}),
     api: { id: model.modelId, url: base, npm: NPM },
     status: "active",
     headers: {},

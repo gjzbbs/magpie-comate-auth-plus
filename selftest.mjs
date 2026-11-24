@@ -92,6 +92,18 @@ await check("凭据判据仍拒绝无关来源", async () => {
   assert.equal(isComate({ type: "oauth", source: "comate-paste", access: "k" }), true)
 })
 
+await check("倍率写成面板可排序的 x{num} credits", async () => {
+  const modelOf = _internal.modelOf
+  assert.equal(typeof modelOf, "function", "需要 _internal.modelOf")
+  const of = (ratio) => modelOf({ id: "comate" }, { modelId: "m1", displayName: "GLM-5.3", ratio }, "https://comate.baidu.com")
+  assert.equal(of("0.3x").credits, "x0.3 credits")
+  assert.equal(of("1x").credits, "x1 credits")
+  assert.equal(of("0.1x").credits, "x0.1 credits")
+  assert.equal(of("").credits, undefined, "上游没给倍率就不要编一个值")
+  // 面板解析器与格式化器共用 /x\s*([\d.]+)/i：x 在数字前才算得出倍率
+  assert.equal(/x\s*([\d.]+)/i.exec(of("0.3x").credits)[1], "0.3")
+})
+
 for (const [state, name] of results) console.log(`${state === "ok" ? "PASS" : "FAIL"}  ${name}`)
 const failed = results.filter(([s]) => s !== "ok").length
 console.log(`\n${results.length - failed}/${results.length} passed`)
