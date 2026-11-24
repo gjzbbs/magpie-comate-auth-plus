@@ -135,6 +135,9 @@ function modelOf(provider, model, base) {
     providerID: provider?.id ?? SITE.id,
     name: ratio ? `${label} · ${ratio}` : label,
     ratio,
+    // 网关的模型管理「倍率」列只读 credits（catalog/view.rs 原样透传 item.credits，
+    // 面板 ui.js: `S.credits ? u3e(S.credits) : "—"`）。上游没给倍率就不编值。
+    ...(ratio ? { credits: ratio } : {}),
     api: { id: model.modelId, url: base, npm: NPM },
     status: "active",
     headers: {},
