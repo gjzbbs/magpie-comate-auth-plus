@@ -17,7 +17,9 @@ import {
   ToolTextParser,
 } from "./protocol.mjs"
 
-const SITE = { id: "comate", name: "Comate" }
+// name 是面板/客户端看到的提供商显示名（宿主 models.mjs: label = provider.name），
+// 官方中文名是「文心快码」；id 仍固定 comate，任何判据都不看 name。
+const SITE = { id: "comate", name: "文心快码" }
 const NPM = "@ai-sdk/openai-compatible"
 const PORT_FALLBACK = 8741
 const LIST_TIMEOUT_MS = 15_000
@@ -389,7 +391,7 @@ function deviceSignIn(options = {}) {
 function desktopSignIn(discoveryOptions) {
   return {
     url: "",
-    instructions: "Uses the Comate account already signed in on this computer.",
+    instructions: "复用本机已登录的文心快码（Comate）客户端账号。",
     method: "auto",
     async callback() {
       let state
@@ -398,7 +400,7 @@ function desktopSignIn(discoveryOptions) {
       } catch (error) {
         return { type: "failed", error: error.message }
       }
-      if (!state) return { type: "failed", error: "Comate isn't signed in on this computer." }
+      if (!state) return { type: "failed", error: "本机未登录文心快码（Comate）客户端。" }
       return {
         type: "success",
         refresh: "",
@@ -415,20 +417,20 @@ function desktopSignIn(discoveryOptions) {
 function licenseSignIn() {
   return {
     type: "api",
-    label: "Comate license (paste)",
-    placeholder: "Comate license",
+    label: "文心快码 License（粘贴）",
+    placeholder: "文心快码 License",
     prompts: [
       {
         type: "text",
         key: "license",
-        message: "Comate license (baidu.comate.license in Comate settings)",
-        validate: (value) => (string(value).trim() ? undefined : "Paste Comate's license"),
+        message: "文心快码 License（Comate 设置里的 baidu.comate.license）",
+        validate: (value) => (string(value).trim() ? undefined : "请粘贴文心快码 License"),
       },
 
     ],
     authorize(inputs) {
       const license = string(inputs?.license).trim()
-      if (!license) return { type: "failed", error: "Paste Comate's license" }
+      if (!license) return { type: "failed", error: "请粘贴文心快码 License" }
       const rawPort = string(inputs?.port).trim()
       const port = rawPort ? Number(rawPort) : 0
       return {
@@ -447,8 +449,8 @@ function makePlugin(options = {}) {
     auth: {
       provider: SITE.id,
       methods: [
-        { type: "oauth", label: "Comate 官网设备授权（网页确认，推荐）", authorize: async () => deviceSignIn() },
-        { type: "oauth", label: "Comate account (this computer)", authorize: async () => desktopSignIn(discoveryOptions) },
+        { type: "oauth", label: "文心快码 官网设备授权（网页确认，推荐）", authorize: async () => deviceSignIn() },
+        { type: "oauth", label: "文心快码（本机已登录的 Comate 客户端）", authorize: async () => desktopSignIn(discoveryOptions) },
         licenseSignIn(),
       ],
     },

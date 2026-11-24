@@ -1,7 +1,7 @@
 {
   "name": "magpie-comate-auth-plus",
-  "version": "0.5.16",
-  "description": "Baidu Comate cloud provider for Magpie: device authorization sign-in (web confirm, no paste) + full client-owned tool calling, images and native session continuation. Merged from qaz139688/magpie-comate-auth 0.2.4 and @pengjunchen/magpie-comate-auth 0.5.12.",
+  "version": "0.5.17",
+  "description": "文心快码（Comate）云端 provider：官网设备授权登录（网页确认，无需粘贴）+ 完整客户端工具调用、图片与原生会话续写。合并自 qaz139688/magpie-comate-auth 0.2.4 与 @pengjunchen/magpie-comate-auth 0.5.12。",
   "type": "module",
   "main": "./index.mjs",
   "exports": "./index.mjs",
@@ -36,5 +36,13 @@
     "magpie-plugin"
   ],
   "license": "MIT",
-  "author": "PengJunchen"
+  "author": "PengJunchen",
+  "magpie": {
+    "name": "文心快码",
+    "summary": {
+      "zh": "百度文心快码（Comate）云端模型：官网设备授权一键登录，带工具调用、图片理解、倍率与真实上下文窗口。",
+      "en": "Baidu Comate (文心快码) cloud models with one-tap device sign-in, tool calling, images, per-model ratio and real context window."
+    },
+    "icon": "data:image/png;base64,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"
+  }
 }

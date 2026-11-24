@@ -127,7 +127,7 @@ export function cloudHooks(hooks, options = {}, shared) {
   hooks.config = async config => {
     config.provider ??= {}
     config.provider.comate ??= {}
-    Object.assign(config.provider.comate, { name: "Comate", npm: "@ai-sdk/openai-compatible", api: ORIGIN + "/v1" })
+    Object.assign(config.provider.comate, { name: "文心快码", npm: "@ai-sdk/openai-compatible", api: ORIGIN + "/v1" })
     config.provider.comate.models ??= {}
   }
   hooks["chat.headers"] = async (input, output) => {
